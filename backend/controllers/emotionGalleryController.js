@@ -1,36 +1,42 @@
-import EmotionGallery from "../models/EmotionGallery.js";
+import Emotion from "../models/Emotion.js";
 
-export const getUserEmotionGallery = async (req, res) => {
+export const addEmotion = async (req, res) => {
+  const { content, emotion, illustration } = req.body;
+  const userId = req.userId;
+
   try {
-    const galleryItems = await EmotionGallery.find({ user: req.userId });
-    res.status(200).json({ success: true, data: galleryItems });
-  } catch (error) {
-    res.status(500).json({ success: false, message: "Server error" });
+    const newEmotion = new Emotion({ userId, text: content, emotion, illustration });
+    await newEmotion.save();
+    res.status(201).json(newEmotion);
+  } catch (err) {
+    console.error("Error adding emotion:", err);
+    res.status(500).json({ message: "Server Error" });
   }
 };
 
-export const addEmotionGalleryItem = async (req, res) => {
+
+export const getEmotions = async (req, res) => {
+  console.log("Fetching emotions, user ID:", req.userId);
+  const userId = req.userId; // Use req.userId set by verifyToken middleware
+
   try {
-    const { title, imageUrl, emotions } = req.body;
-    const newGalleryItem = new EmotionGallery({
-      user: req.userId,
-      title,
-      imageUrl,
-      emotions,
-    });
-    const savedGalleryItem = await newGalleryItem.save();
-    res.status(201).json({ success: true, data: savedGalleryItem });
-  } catch (error) {
-    res.status(500).json({ success: false, message: "Server error" });
+    const emotions = await Emotion.find({ userId });
+    res.status(200).json(emotions);
+  } catch (err) {
+    console.error("Error fetching emotions:", err);
+    res.status(500).json({ message: "Server Error" });
   }
 };
 
-export const deleteEmotionGalleryItem = async (req, res) => {
+export const deleteEmotion = async (req, res) => {
+  const { id } = req.params;
+  console.log("Deleting emotion, emotion ID:", id);
+
   try {
-    const { id } = req.params;
-    await EmotionGallery.findByIdAndDelete(id);
-    res.status(200).json({ success: true, message: "Gallery item deleted" });
-  } catch (error) {
-    res.status(500).json({ success: false, message: "Server error" });
+    await Emotion.findByIdAndDelete(id);
+    res.status(200).json({ message: "Emotion deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting emotion:", err);
+    res.status(500).json({ message: "Server Error" });
   }
 };

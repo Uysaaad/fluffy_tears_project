@@ -1,29 +1,20 @@
-import React, { useEffect, useState, useContext } from "react";
-import { BASE_URL, getToken } from "./../../config";
-import { AuthContext } from "../../context/AuthContext";
-import HashLoader from "react-spinners/HashLoader";
+import React, { useEffect, useState } from "react";
+import { BASE_URL } from "../../config";
 import { toast } from "react-toastify";
+import HashLoader from "react-spinners/HashLoader";
 
 const EmotionGallery = () => {
-  const { token } = useContext(AuthContext);
-  const [galleryItems, setGalleryItems] = useState([]);
+  const [emotions, setEmotions] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchGalleryItems = async () => {
+    const fetchEmotions = async () => {
       setLoading(true);
-      const token = getToken();
-
-      if (!token) {
-        setError("No token, authorization denied 🤢");
-        setLoading(false);
-        return;
-      }
-
       try {
-        const res = await fetch(`${BASE_URL}/emotion-gallery`, {
-          headers: { Authorization: `Bearer ${token}` },
+        const res = await fetch(`${BASE_URL}/emotions`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         });
 
         if (!res.ok) {
@@ -31,82 +22,68 @@ const EmotionGallery = () => {
           throw new Error(`${res.status} ${res.statusText}: ${errorText}`);
         }
 
-        const result = await res.json();
-        setGalleryItems(result.data);
+        const data = await res.json();
+        setEmotions(data);
         setLoading(false);
-      } catch (err) {
-        console.error("Error fetching gallery items:", err);
-        setError(err.message);
+      } catch (error) {
+        console.error("Error fetching emotions:", error);
+        toast.error("Failed to fetch emotions.");
         setLoading(false);
       }
     };
 
-    fetchGalleryItems();
-  }, [token]);
+    fetchEmotions();
+  }, []);
 
-  const handleDeleteGalleryItem = async (id) => {
+  const handleDelete = async (id) => {
     try {
-      const res = await fetch(`${BASE_URL}/emotion-gallery/${id}`, {
+      const res = await fetch(`${BASE_URL}/emotions/${id}`, {
         method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       });
 
       if (!res.ok) {
-        throw new Error("Failed to delete gallery item");
+        const errorText = await res.text();
+        throw new Error(`${res.status} ${res.statusText}: ${errorText}`);
       }
 
-      setGalleryItems(galleryItems.filter((item) => item._id !== id));
-      toast.success("Gallery item deleted successfully");
+      setEmotions(emotions.filter((emotion) => emotion._id !== id));
+      toast.success("Emotion deleted successfully");
     } catch (err) {
-      toast.error(err.message);
+      console.error("Error deleting emotion:", err);
+      toast.error("Failed to delete emotion.");
     }
   };
 
   return (
     <div>
-      {loading && (
+      {loading ? (
         <div className="flex items-center justify-center w-full h-full">
           <HashLoader color="#0067FF" />
         </div>
-      )}
-      {error && !loading && (
-        <div className="flex items-center justify-center w-full h-full">
-          <h3 className="text-headingColor text-[20px] font-semibold leading-[30px]">
-            {error}
-          </h3>
-        </div>
-      )}
-      {!loading && !error && galleryItems.length === 0 && (
-        <div className="text-center">
-          <p>No gallery items found. Add some illustrations!</p>
-        </div>
-      )}
-      {!loading && !error && galleryItems.length > 0 && (
-        <div className="grid gap-4">
-          {galleryItems.map((item) => (
-            <div
-              key={item._id}
-              className="p-4 border rounded-lg shadow-md bg-white"
-            >
-              <h3 className="text-lg font-semibold">{item.title}</h3>
-              <img
-                src={item.imageUrl}
-                alt={item.title}
-                className="w-full h-auto mt-2 rounded-md"
-              />
-              <p className="text-sm text-gray-600 mt-2">
-                Emotions: {item.emotions.join(", ")}
-              </p>
-              <div className="flex justify-end">
+      ) : (
+        <div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {emotions.map((emotion) => (
+              <div key={emotion._id} className="border p-4 rounded-md">
+                <p>{emotion.text}</p>
+                <p>{emotion.emotion}</p>
+                <img
+                  src={emotion.illustration}
+                  alt="illustration"
+                  className="w-full"
+                />
                 <button
-                  onClick={() => handleDeleteGalleryItem(item._id)}
-                  className="px-4 py-2 bg-red-500 text-white rounded-md"
+                  onClick={() => handleDelete(emotion._id)}
+                  className="mt-2 bg-red-600 text-white py-2 px-4 rounded"
                 >
                   Delete
                 </button>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       )}
     </div>

@@ -1,9 +1,11 @@
-import React, { useEffect, useState, useContext } from "react";
-import { BASE_URL, getToken } from "./../../config";
+import React, { useState, useEffect, useContext } from "react";
+import { BASE_URL, getToken } from "../../config";
 import { AuthContext } from "../../context/AuthContext";
 import HashLoader from "react-spinners/HashLoader";
-import AddJournal from "./AddJournal"; // Ensure correct path
+import AddJournal from "./AddJournal";
 import { toast } from "react-toastify";
+import { createIllustrationSketch } from "../../utils/illustrationSketch";
+import p5 from "p5";
 
 const MyJournal = () => {
   const { token } = useContext(AuthContext);
@@ -12,6 +14,7 @@ const MyJournal = () => {
   const [error, setError] = useState(null);
   const [isAddJournalOpen, setIsAddJournalOpen] = useState(false);
   const [predictions, setPredictions] = useState({});
+  const [illustrations, setIllustrations] = useState({});
 
   useEffect(() => {
     const fetchJournals = async () => {
@@ -35,11 +38,9 @@ const MyJournal = () => {
         }
 
         const result = await res.json();
-        console.log("Fetched Journals: ", result.data); // Log the fetched data
         setJournals(result.data);
         setLoading(false);
       } catch (err) {
-        console.error("Error fetching journals:", err);
         setError(err.message);
         setLoading(false);
       }
@@ -98,17 +99,80 @@ const MyJournal = () => {
           [journalId]: result.data,
         }));
         toast.success("Journal processed successfully!");
+
+        // Wait for the container to render before creating the p5 instance
+        setTimeout(() => {
+          const containerId = `sketch-container-${journalId}`;
+          new p5(
+            createIllustrationSketch(
+              result.data,
+              setIllustrations,
+              journalId,
+              containerId
+            ),
+            document.getElementById(containerId)
+          );
+        }, 0);
       } else {
         toast.error("Failed to process journal.");
       }
     } catch (err) {
-      console.error("Error processing journal:", err);
       toast.error("Failed to process journal.");
     }
   };
 
-  console.log("Journals: ", journals);
-  console.log("Predictions: ", predictions);
+const handleAddToGallery = async (journalId) => {
+  try {
+    const illustration = illustrations[journalId];
+    const content = journals.find(
+      (journal) => journal._id === journalId
+    ).content;
+    let emotion = null;
+    if (predictions[journalId] && predictions[journalId].length > 0) {
+      const sortedPredictions = predictions[journalId].sort(
+        (a, b) => b.probability - a.probability
+      );
+      emotion = sortedPredictions[0].label;
+    }
+    // Log the data being sent
+    console.log("Data being sent:", {
+      journalId,
+      content,
+      emotion,
+      illustration,
+    });
+
+    const res = await fetch(`${BASE_URL}/emotion-gallery`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        journalId,
+        content,
+        emotion,
+        illustration,
+      }),
+    });
+
+    const result = await res.json();
+
+    // Log the response received
+    console.log("Response received:", result);
+
+    if (!res.ok) {
+      const errorText = result.message || "Unknown error";
+      throw new Error(`${res.status} ${res.statusText}: ${errorText}`);
+    } else {
+      toast.success("Illustration added to gallery!");
+    }
+  } catch (err) {
+    console.error("Error adding to gallery:", err); // Log the error to the console
+    toast.error(err.message || "Failed to add illustration to gallery.");
+  }
+};
+
 
   return (
     <div>
@@ -146,16 +210,11 @@ const MyJournal = () => {
             </button>
           </div>
           <div className="grid gap-4">
-            {journals.map((journal, index) => {
-              const { _id, title, content, createdAt } = journal;
-              const journalId = _id || `journal-${index}`;
+            {journals.map((journal) => {
+              const { _id: journalId, title, content, createdAt } = journal;
               const formattedDate = createdAt
                 ? new Date(createdAt).toLocaleDateString()
                 : "Unknown date";
-              console.log("Journal ID: ", journalId);
-              console.log("Title: ", title);
-              console.log("Content: ", content);
-              console.log("Date: ", formattedDate);
               return (
                 <div
                   key={journalId}
@@ -183,17 +242,23 @@ const MyJournal = () => {
                       <div className="mt-4">
                         <h4 className="text-md font-semibold">Predictions:</h4>
                         <ul>
-                          {predictions[journalId].map((prediction, index) => {
-                            const predictionKey = `${journalId}-${index}`;
-                            console.log("Prediction Key: ", predictionKey);
-                            return (
-                              <li key={predictionKey}>
-                                {prediction.label}:{" "}
-                                {prediction.probability.toFixed(4)}
-                              </li>
-                            );
-                          })}
+                          {predictions[journalId].map((prediction, index) => (
+                            <li key={`${journalId}-${index}`}>
+                              {prediction.label}:{" "}
+                              {prediction.probability.toFixed(4)}
+                            </li>
+                          ))}
                         </ul>
+                        <div
+                          id={`sketch-container-${journalId}`}
+                          style={{ width: "100%", height: "400px" }}
+                        ></div>
+                        <button
+                          onClick={() => handleAddToGallery(journalId)}
+                          className="px-4 py-2 bg-blue-500 text-white rounded-md mt-4"
+                        >
+                          Add to Gallery
+                        </button>
                       </div>
                     )}
                 </div>

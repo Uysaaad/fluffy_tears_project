@@ -1,5 +1,5 @@
 import {
-  authenticate
+  verifyToken
 } from "../auth/verifyToken.js";
 import {
   deleteUser,
@@ -13,12 +13,12 @@ import express from "express";
 const router = express.Router();
 
 // get all users
-router.get("/", authenticate, getAllUser);
-router.get("/:id", authenticate, getSingleUser);
-router.put("/:id", authenticate, updateUser);
-router.delete("/:id", authenticate, deleteUser);
+router.get("/", verifyToken, getAllUser);
+router.get("/:id", verifyToken, getSingleUser);
+router.put("/:id", verifyToken, updateUser);
+router.delete("/:id", verifyToken, deleteUser);
 
-router.get("/profile/me", authenticate, getUserProfile);
+router.get("/profile/me", verifyToken, getUserProfile);
 
 
 export default router;

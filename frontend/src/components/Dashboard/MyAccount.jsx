@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import MyJournal from "./MyJournal"; // Ensure correct path
 import Profile from "./Profile"; // Ensure correct path
+import EmotionGallery from "./EmotionGallery"; // Ensure correct path
 import { BASE_URL } from "./../../config";
 import useFetchData from "../../hooks/useFetchData";
 import HashLoader from "react-spinners/HashLoader";
@@ -95,6 +96,14 @@ const MyAccount = () => {
                   My Journals
                 </button>
                 <button
+                  onClick={() => setTab("gallery")}
+                  className={`${
+                    tab === "gallery" && "bg-[#0067FF] text-white font-normal"
+                  } w-full mb-4 p-2 rounded-md text-headingColor font-semibold text-[16px] leading-7 border border-solid border-[#0067FF]`}
+                >
+                  Emotion Gallery
+                </button>
+                <button
                   onClick={() => setTab("settings")}
                   className={`${
                     tab === "settings" && "bg-[#0067FF] text-white font-normal"
@@ -124,6 +133,12 @@ const MyAccount = () => {
                   <div>
                     <h2 className="heading text-[30px]">My Journals</h2>
                     <MyJournal />
+                  </div>
+                )}
+                {tab === "gallery" && (
+                  <div>
+                    <h2 className="heading text-[30px]">Emotion Gallery</h2>
+                    <EmotionGallery />
                   </div>
                 )}
                 {tab === "settings" && (

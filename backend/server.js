@@ -8,8 +8,9 @@ import { fileURLToPath } from "url";
 import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/user.js";
 import journalRoutes from "./routes/journal.js";
-import emotionGalleryRoutes from "./routes/emotionGallery.js";
-import predictionRoutes from "./routes/prediction.js"; // Import prediction routes
+// import emotionGalleryRoutes from "./routes/emotion.js";
+import predictionRoutes from "./routes/prediction.js";
+import emotionRoutes from "./routes/emotion.js";
 
 dotenv.config(); // Load environment variables from .env file
 
@@ -45,7 +46,8 @@ const connectDB = async () => {
 };
 
 // Middleware
-app.use(express.json());
+app.use(express.json({ limit: '50mb' })); // Increase the payload limit
+app.use(express.urlencoded({ limit: '50mb', extended: true })); // Increase the payload limit for URL-encoded data
 app.use(cookieParser());
 
 // Get the directory name using import.meta.url
@@ -59,8 +61,9 @@ app.use("/tokenizer", express.static(path.join(__dirname, "tf_tokenizer")));
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/journals", journalRoutes);
-app.use("/api/v1/emotion-gallery", emotionGalleryRoutes);
-app.use("/api/v1/predict", predictionRoutes); // Use prediction routes
+app.use("/api/v1/emotion-gallery", emotionRoutes);
+app.use("/api/v1/predict", predictionRoutes); 
+app.use("/api/v1/emotions", emotionRoutes)
 
 app.listen(port, () => {
   connectDB();

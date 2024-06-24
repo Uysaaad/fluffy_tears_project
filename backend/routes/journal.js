@@ -6,14 +6,14 @@ import {
   deleteJournal,
   finishJournal,
 } from "../controllers/journalController.js";
-import { authenticate } from "../auth/verifyToken.js";
+import { verifyToken } from "../auth/verifyToken.js";
 
 const router = express.Router();
 
-router.get("/", authenticate, getUserJournals);
-router.post("/", authenticate, createJournal);
-router.put("/:id", authenticate, updateJournal);
-router.delete("/:id", authenticate, deleteJournal);
-router.post("/finish", authenticate, finishJournal);
+router.get("/", verifyToken, getUserJournals);
+router.post("/", verifyToken, createJournal);
+router.put("/:id", verifyToken, updateJournal);
+router.delete("/:id", verifyToken, deleteJournal);
+router.post("/finish", verifyToken, finishJournal);
 
 export default router;
