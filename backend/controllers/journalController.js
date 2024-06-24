@@ -1,37 +1,61 @@
-const Journal = require('../models/Journal');
-const { analyzeEmotion } = require('../services/emotionAnalysis');
+import Journal from "../models/Journal.js";
+import {
+  runPredictionModel,
+  generateIllustration,
+} from "../utils/emotionUtils.js";
 
-// Create a new journal
-const createJournal = async (req, res) => {
-    const { userId, content } = req.body; // Get userId and content from request body
-
-    try {
-        const emotion = await analyzeEmotion(content);
-
-        const journal = new Journal({
-            userId,
-            content,
-            emotion
-        });
-
-        await journal.save() // Save the journal to the database
-        res.status(201).json(journal); // Send a success response
-    } catch (err) {
-        res.status(400).json({ error: err.message });
-    }
-
-}
-
-// Get jounals by user ID
-const getJournalsByUser = async (req, res) => {
-    const { userId } = req.params;
-    try {
-        const journals = await Journal.find({ userId }); // Find journals by userId
-        res.status(200).json(journals);
-    } catch (err) {
-        res.status(400).json({ error: err.message });
-    }
-    
+export const getUserJournals = async (req, res) => {
+  try {
+    const journals = await Journal.find({ user: req.userId });
+    res.status(200).json({ success: true, data: journals });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error" });
+  }
 };
 
-module.exports = { createJournal, getJournalsByUser };
+export const createJournal = async (req, res) => {
+  try {
+    const { title, content } = req.body;
+    const newJournal = new Journal({ user: req.userId, title, content });
+    const savedJournal = await newJournal.save();
+    res.status(201).json({ success: true, data: savedJournal });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+export const updateJournal = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, content } = req.body;
+    const updatedJournal = await Journal.findByIdAndUpdate(
+      id,
+      { title, content },
+      { new: true }
+    );
+    res.status(200).json({ success: true, data: updatedJournal });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+export const deleteJournal = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Journal.findByIdAndDelete(id);
+    res.status(200).json({ success: true, message: "Journal deleted" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+export const finishJournal = async (req, res) => {
+  try {
+    const { content } = req.body;
+    const emotions = await runPredictionModel(content);
+    const imageUrl = await generateIllustration(emotions);
+    res.status(200).json({ success: true, data: { emotions, imageUrl } });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
