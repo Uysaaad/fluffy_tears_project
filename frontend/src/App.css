@@ -2,8 +2,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap');
 
 @font-face {
-  font-family: 'QueensTrial';
-  src: url('./assets/fonts/QueensTrial-Thin.ttf') format('truetype');
+  font-family: 'Torcing';
+  src: url('./assets/fonts/Torcing.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Quicksand';
+  src: url('./assets/fonts/Quicksand\ Light.otf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +21,7 @@
 }
 
 body {
-  font-family: "QueensTrial", sans-serif;
+  font-family: "Quicksand", sans-serif;
 }
 .swiper-pagination-bullet {
   widows: 12px;

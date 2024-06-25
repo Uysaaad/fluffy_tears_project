@@ -31,6 +31,48 @@ const BubbleHomePage = () => {
     };
   }, []);
 
+  useEffect(() => {
+    function generateNoiseTexture() {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+
+      const imageData = ctx.createImageData(width, height);
+      const data = imageData.data;
+
+      for (let x = 0; x < width; x += 1) {
+        for (let y = 0; y < height; y += 1) {
+          const i = 4 * (x + y * width);
+          const ns = -0.5 + Math.random(); // Random noise value
+          for (let n = 0; n < 3; n += 1) {
+            data[i + n] = ns * 255;
+          }
+          data[i + 3] = 32; // Alpha channel for noise effect
+        }
+      }
+
+      ctx.putImageData(imageData, 0, 0);
+      return canvas.toDataURL();
+    }
+
+    function applyNoiseTexture() {
+      const bgElement = document.querySelector(".gradient-bg");
+      const noiseTexture = generateNoiseTexture();
+      bgElement.style.backgroundImage = `url(${noiseTexture}), linear-gradient(to bottom, #F87AAF, #6F86A8)`;
+      bgElement.style.backgroundBlendMode = "overlay";
+    }
+
+    applyNoiseTexture();
+    window.addEventListener("resize", applyNoiseTexture);
+
+    return () => {
+      window.removeEventListener("resize", applyNoiseTexture);
+    };
+  }, []);
+
   return (
     <div className="bubble-background">
       <div className="gradient-bg">

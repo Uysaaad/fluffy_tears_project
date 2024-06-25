@@ -27,32 +27,13 @@ const Header = () => {
     }
   }, [user, token]);
 
-  const headerRef = useRef(null);
   const menuRef = useRef(null);
-
-  const handleStickyHeader = () => {
-    window.addEventListener("scroll", () => {
-      if (
-        document.body.scrollTop > 80 ||
-        document.documentElement.scrollTop > 80
-      ) {
-        headerRef.current.classList.add("sticky__header");
-      } else {
-        headerRef.current.classList.remove("sticky__header");
-      }
-    });
-  };
-
-  useEffect(() => {
-    handleStickyHeader();
-    return () => window.removeEventListener("scroll", handleStickyHeader);
-  });
 
   const toggleMenu = () => menuRef.current.classList.toggle("show__menu");
 
   return (
-    <header className="header flex items-center" ref={headerRef}>
-      <div className="container">
+    <header className="header flex items-center">
+      <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
           {/*-------------- logo ---------*/}
           <div className="w-20 h-20">
@@ -60,7 +41,7 @@ const Header = () => {
           </div>
 
           {/*----------- menu -------------*/}
-          <div className="navigation" ref={menuRef} onClick={toggleMenu}>
+          <div className="navigation" ref={menuRef}>
             <ul className="menu flex items-center gap-[2.7rem]">
               {navLinks.map((link, index) => (
                 <li key={index}>
@@ -68,8 +49,8 @@ const Header = () => {
                     to={link.path}
                     className={(navClass) =>
                       navClass.isActive
-                        ? "text-primaryColor text-[16px] leading-7 font-[600]"
-                        : "text-textColor text-[16px] leading-7 font-[500] hover:text-primaryColor"
+                        ? "text-primaryColor text-[16px] leading-7 font-[600] rounded-full bg-white bg-opacity-10 backdrop-filter backdrop-saturate-150 backdrop-blur-xl shadow-lg px-5 py-1 min-w-[150px] text-center"
+                        : "text-textColor text-[16px] leading-7 font-[500] hover:text-primaryColor transition duration-300 ease-in-out hover:scale-110"
                     }
                   >
                     {link.display}
@@ -78,6 +59,7 @@ const Header = () => {
               ))}
             </ul>
           </div>
+
           {/*--------------- nav right -----------*/}
           <div className="flex items-center gap-4">
             {token && user ? (

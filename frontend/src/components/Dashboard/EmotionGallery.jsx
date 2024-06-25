@@ -58,6 +58,7 @@ const EmotionGallery = () => {
   };
 
   return (
+    
     <div>
       {loading ? (
         <div className="flex items-center justify-center w-full h-full">

@@ -32,7 +32,7 @@ const Home = () => {
               <div className="p-10">
                 <button
                   onClick={handleButtonClick}
-                  className="btn border border-1 border-solid border-gray-700"
+                  className="rounded-full bg-white bg-opacity-10 backdrop-filter backdrop-saturate-150 backdrop-blur-xl shadow-lg px-5 py-1 min-w-[150px] text-center transition duration-300 ease-in-out hover:scale-110"
                 >
                   Write Down Your Thoughts
                 </button>
