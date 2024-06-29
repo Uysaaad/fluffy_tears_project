@@ -6,6 +6,8 @@ import AddJournal from "./AddJournal";
 import { toast } from "react-toastify";
 import { createIllustrationSketch } from "../../utils/illustrationSketch";
 import p5 from "p5";
+import { FiPlus } from "react-icons/fi";
+import FlipPage from "react-flip-page";
 
 const MyJournal = () => {
   const { token } = useContext(AuthContext);
@@ -15,6 +17,7 @@ const MyJournal = () => {
   const [isAddJournalOpen, setIsAddJournalOpen] = useState(false);
   const [predictions, setPredictions] = useState({});
   const [illustrations, setIllustrations] = useState({});
+  const [currentPage, setCurrentPage] = useState(0);
 
   useEffect(() => {
     const fetchJournals = async () => {
@@ -54,8 +57,9 @@ const MyJournal = () => {
   };
 
   const handleJournalAdded = (newJournal) => {
-    setJournals((prevJournals) => [newJournal, ...prevJournals]);
+    setJournals((prevJournals) => [...prevJournals, newJournal]);
     setIsAddJournalOpen(false);
+    setCurrentPage(journals.length + 1); // Go to the newly added journal page
   };
 
   const handleDeleteJournal = async (id) => {
@@ -121,61 +125,152 @@ const MyJournal = () => {
     }
   };
 
-const handleAddToGallery = async (journalId) => {
-  try {
-    const illustration = illustrations[journalId];
-    const content = journals.find(
-      (journal) => journal._id === journalId
-    ).content;
-    let emotion = null;
-    if (predictions[journalId] && predictions[journalId].length > 0) {
-      const sortedPredictions = predictions[journalId].sort(
-        (a, b) => b.probability - a.probability
+  const handleAddToGallery = async (journalId) => {
+    try {
+      const illustration = illustrations[journalId];
+      const content = journals.find(
+        (journal) => journal._id === journalId
+      ).content;
+      let emotion = null;
+      if (predictions[journalId] && predictions[journalId].length > 0) {
+        const sortedPredictions = predictions[journalId].sort(
+          (a, b) => b.probability - a.probability
+        );
+        emotion = sortedPredictions[0].label;
+      }
+
+      const res = await fetch(`${BASE_URL}/emotion-gallery`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          journalId,
+          content,
+          emotion,
+          illustration,
+        }),
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        const errorText = result.message || "Unknown error";
+        throw new Error(`${res.status} ${res.statusText}: ${errorText}`);
+      } else {
+        toast.success("Illustration added to gallery!");
+        // Reset predictions and page view to default state
+        setPredictions((prevPredictions) => {
+          const updatedPredictions = { ...prevPredictions };
+          delete updatedPredictions[journalId];
+          return updatedPredictions;
+        });
+        setCurrentPage(0);
+      }
+    } catch (err) {
+      toast.error(err.message || "Failed to add illustration to gallery.");
+    }
+  };
+
+  const turnPage = (delta) => {
+    setCurrentPage((prevPage) => {
+      const newPage = prevPage + delta;
+      if (newPage < 0) return 0;
+      if (newPage > journals.length) return journals.length; // Adjusted for the cover page
+      return newPage;
+    });
+  };
+
+  useEffect(() => {
+    console.log(`Current Page: ${currentPage}`);
+  }, [currentPage]);
+
+  const renderContent = () => {
+    if (currentPage === 0) {
+      return (
+        <div className="flex items-center justify-center h-full w-full rounded-tr-lg rounded-br-lg bg-[#DDC2E1] opacity-70">
+          <h1 className="font-riesling text-[#D5767F] text-[100px]">
+            Dear Diary
+          </h1>
+        </div>
       );
-      emotion = sortedPredictions[0].label;
-    }
-    // Log the data being sent
-    console.log("Data being sent:", {
-      journalId,
-      content,
-      emotion,
-      illustration,
-    });
-
-    const res = await fetch(`${BASE_URL}/emotion-gallery`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        journalId,
-        content,
-        emotion,
-        illustration,
-      }),
-    });
-
-    const result = await res.json();
-
-    // Log the response received
-    console.log("Response received:", result);
-
-    if (!res.ok) {
-      const errorText = result.message || "Unknown error";
-      throw new Error(`${res.status} ${res.statusText}: ${errorText}`);
     } else {
-      toast.success("Illustration added to gallery!");
-    }
-  } catch (err) {
-    console.error("Error adding to gallery:", err); // Log the error to the console
-    toast.error(err.message || "Failed to add illustration to gallery.");
-  }
-};
+      const journal = journals[currentPage - 1];
+      const { _id: journalId, title, content, createdAt } = journal;
+      const formattedDate = createdAt
+        ? new Date(createdAt).toLocaleDateString()
+        : "Unknown date";
 
+      console.log(`Rendering journal with id: ${journalId}`);
+      console.log(`Title: ${title}`);
+      console.log(`Content: ${content}`);
+
+      return (
+        <div className="p-4 md:p-6 lg:p-8 xl:p-10 flex flex-col justify-between h-full">
+          <div>
+            <h3 className="text-lg md:text-xl lg:text-2xl font-semibold">
+              {title}
+            </h3>
+            <p className="text-sm md:text-base lg:text-lg text-gray-600">
+              {formattedDate}
+            </p>
+            <p className="mt-2 text-[14px] md:text-[16px] lg:text-[18px] xl:text-[20px]">
+              {content}
+            </p>
+          </div>
+          <div className="flex justify-end space-x-2 mt-4">
+            <button
+              onClick={() => handlePredict(journalId, content)}
+              className="px-4 py-2 bg-green-500 text-white rounded-md text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px]"
+            >
+              Predict
+            </button>
+            <button
+              onClick={() => handleDeleteJournal(journalId)}
+              className="px-4 py-2 bg-red-500 text-white rounded-md text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px]"
+            >
+              Delete
+            </button>
+          </div>
+          {predictions[journalId] && predictions[journalId].length > 0 && (
+            <div className="mt-4">
+              <h4 className="text-md md:text-lg lg:text-xl font-semibold">
+                Predictions:
+              </h4>
+              <ul className="list-disc ml-5">
+                {predictions[journalId].map((prediction, index) => (
+                  <li
+                    key={`${journalId}-${index}`}
+                    className="text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px]"
+                  >
+                    {prediction.label}: {prediction.probability.toFixed(4)}
+                  </li>
+                ))}
+              </ul>
+              <div
+                id={`sketch-container-${journalId}`}
+                className="mt-4"
+                style={{ width: "100%", height: "400px" }}
+              ></div>
+              <button
+                onClick={() => handleAddToGallery(journalId)}
+                className="px-4 py-2 bg-blue-500 text-white rounded-md mt-4 text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px]"
+              >
+                Add to Gallery
+              </button>
+            </div>
+          )}
+          <div className="self-end mt-4">
+            <p className="text-sm text-gray-500">Page {currentPage}</p>
+          </div>
+        </div>
+      );
+    }
+  };
 
   return (
-    <div>
+    <div className="max-w-[1170px] mx-auto p-4 md:p-6 lg:p-8 xl:p-10">
       {loading && (
         <div className="flex items-center justify-center w-full h-full">
           <HashLoader color="#0067FF" />
@@ -183,87 +278,55 @@ const handleAddToGallery = async (journalId) => {
       )}
       {error && !loading && (
         <div className="flex items-center justify-center w-full h-full">
-          <h3 className="text-headingColor text-[20px] font-semibold leading-[30px]">
+          <h3 className="text-headingColor text-[16px] md:text-[18px] lg:text-[20px] xl:text-[22px] font-semibold leading-[24px] md:leading-[26px] lg:leading-[28px] xl:leading-[30px]">
             {error}
           </h3>
         </div>
       )}
       {!loading && !error && journals.length === 0 && (
         <div className="text-center">
-          <p>No journals found. Start writing your first journal!</p>
+          <p className="text-[14px] md:text-[16px] lg:text-[18px] xl:text-[20px]">
+            No journals found. Start writing your first journal!
+          </p>
           <button
             onClick={handleAddJournal}
-            className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-md"
+            className="mt-4 py-2 px-4 rounded-md text-[14px] md:text-[16px] lg:text-[18px] xl:text-[20px]"
           >
-            Add Journal
+            <FiPlus />
           </button>
         </div>
       )}
       {!loading && !error && journals.length > 0 && (
-        <div>
+        <div className="">
           <div className="text-right mb-4">
             <button
               onClick={handleAddJournal}
-              className="bg-blue-500 text-white py-2 px-4 rounded-md"
+              className="py-2 px-4 rounded-md text-[14px] md:text-[16px] lg:text-[18px] xl:text-[20px]"
             >
-              Add Journal
+              <FiPlus />
             </button>
           </div>
-          <div className="grid gap-4">
-            {journals.map((journal) => {
-              const { _id: journalId, title, content, createdAt } = journal;
-              const formattedDate = createdAt
-                ? new Date(createdAt).toLocaleDateString()
-                : "Unknown date";
-              return (
-                <div
-                  key={journalId}
-                  className="p-4 border rounded-lg shadow-md bg-white"
-                >
-                  <h3 className="text-lg font-semibold">{title}</h3>
-                  <p className="text-sm text-gray-600">{formattedDate}</p>
-                  <p className="mt-2">{content}</p>
-                  <div className="flex justify-end space-x-2">
-                    <button
-                      onClick={() => handlePredict(journalId, content)}
-                      className="px-4 py-2 bg-green-500 text-white rounded-md"
-                    >
-                      Predict
-                    </button>
-                    <button
-                      onClick={() => handleDeleteJournal(journalId)}
-                      className="px-4 py-2 bg-red-500 text-white rounded-md"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                  {predictions[journalId] &&
-                    predictions[journalId].length > 0 && (
-                      <div className="mt-4">
-                        <h4 className="text-md font-semibold">Predictions:</h4>
-                        <ul>
-                          {predictions[journalId].map((prediction, index) => (
-                            <li key={`${journalId}-${index}`}>
-                              {prediction.label}:{" "}
-                              {prediction.probability.toFixed(4)}
-                            </li>
-                          ))}
-                        </ul>
-                        <div
-                          id={`sketch-container-${journalId}`}
-                          style={{ width: "100%", height: "400px" }}
-                        ></div>
-                        <button
-                          onClick={() => handleAddToGallery(journalId)}
-                          className="px-4 py-2 bg-blue-500 text-white rounded-md mt-4"
-                        >
-                          Add to Gallery
-                        </button>
-                      </div>
-                    )}
-                </div>
-              );
-            })}
+          <div className="rounded-tr-2xl rounded-br-2xl shadow-custom w-[350px] h-[500px] flex items-center justify-center mx-auto my-auto">
+            {renderContent()}
+          </div>
+
+          <div className="controls centered mt-6">
+            <button
+              onClick={() => turnPage(-1)}
+              disabled={currentPage === 0}
+              id="prevPage"
+              className="px-4 py-2 bg-gray-300 rounded-md text-[14px] md:text-[16px] lg:text-[18px] xl:text-[20px] mr-2"
+            >
+              &lt; Previous
+            </button>
+            <button
+              onClick={() => turnPage(1)}
+              disabled={currentPage === journals.length}
+              id="nextPage"
+              className="px-4 py-2 bg-gray-300 rounded-md text-[14px] md:text-[16px] lg:text-[18px] xl:text-[20px]"
+            >
+              Next &gt;
+            </button>
           </div>
         </div>
       )}

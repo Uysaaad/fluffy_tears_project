@@ -13,6 +13,32 @@
   font-weight: normal;
   font-style: normal;
 }
+@font-face {
+  font-family: 'Nighty';
+  src: url('./assets/fonts/Nightydemo-nRjOP.otf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'GrayDesign';
+  src: url('./assets/fonts/Gray Design_Light.otf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Queens';
+  src: url('./assets/fonts/QueensTrial-Thin.ttf') format('truetype');
+  font-weight: normal;
+  font: normal;
+}
+
+@font-face {
+  font-family: 'Riesling';
+  src: url('./assets/fonts/riesling.ttf') format('truetype');
+  font-weight: normal;
+  font: normal;
+}
 
 * {
   margin: 0;
@@ -20,9 +46,17 @@
   box-sizing: border-box;
 }
 
-body {
-  font-family: "Quicksand", sans-serif;
-}
+/* HomePage.css */
+/* .hero__section {
+  background-image: url('https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExd3B1aXl6cGVybnNwemgxd3pyMTF4eG9zMHZtM2lkZ2Y5ZnAycGo1cSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/tsgPJ5y0MrklJWst2N/giphy.gif');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100vh;
+} */
+
+
 .swiper-pagination-bullet {
   widows: 12px;
   height: 12px;
@@ -60,6 +94,61 @@ body {
   background: transparent;
   /* box-shadow: 3px 3px -8px 3px #ddd; */
 }
+
+.flipbook {
+  perspective: 1000px;
+  width: 60%;
+  height: 500px;
+  position: relative;
+  margin: 0 auto;
+  background-color: #DDC2E1;
+  
+}
+
+.page {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  background-color: white;
+}
+
+.cover {
+  background-color: #f5f5f5;
+}
+
+.flipbook .leaf {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease;
+  transform-origin: left;
+  z-index: 2; /* Ensures that pages stack correctly */
+}
+
+.flipbook .leaf.turned {
+  transform: rotateY(-180deg);
+  z-index: 1;
+}
+
+.flipbook .page.back {
+  transform: rotateY(180deg);
+}
+
+.controls {
+  text-align: center;
+  margin-top: 20px;
+}
+
+
+/* Emotion Gallery */
+
 
 @media only screen and (max-width:768px) {
   .navigation {

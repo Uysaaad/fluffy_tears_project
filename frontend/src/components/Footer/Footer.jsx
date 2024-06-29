@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import logo from "../../assets/images/logo.png";
 import { RiLinkedinFill } from "react-icons/ri";
 import {
   AiFillYoutube,
@@ -74,12 +73,12 @@ const quickLinks03 = [
 const Footer = () => {
   const year = new Date().getFullYear();
   return (
-    <footer className="pb-16 pt-10">
+    <footer className="p-1">
       <div className="container">
-        <div className="flex justify-between flex-col md:flex-row flex-wrap gap-[30px]">
+        <div className="flex justify-center flex-col flex-wrap gap-[30px]">
           <div>
     
-            <p className="text-[16px] leading-7 font-[400] text-textColor mt-4">
+            <p className="font-queens text-[16px] leading-7 font-[400] text-textColor mt-6">
               Copyright {year} developed by Yushan Xu
             </p>
             <div className="flex items-center gap-3 mt-4">

@@ -10,8 +10,11 @@ import { AuthContext } from "../../context/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import BubbleHomePage from "../BubbleHomePage/BubbleHomePage";
-import { TfiGallery } from "react-icons/tfi";
-
+import { BsJournals } from "react-icons/bs";
+import { GrGallery } from "react-icons/gr";
+import { IoSettingsOutline } from "react-icons/io5";
+import { CiLogout } from "react-icons/ci";
+import { RiDeleteBin6Line } from "react-icons/ri";
 const MyAccount = () => {
   const [tab, setTab] = useState("journals");
   const {
@@ -52,101 +55,113 @@ const MyAccount = () => {
   return (
     <>
       <BubbleHomePage />
-      <section className="bg-gray-50 min-h-screen mx-20 rounded-2xl bg-opacity-10 backdrop-filter backdrop-saturate-150 backdrop-blur-xl shadow-lg px-5 py-1 min-w-[150px]">
-        <div className="max-w-[1170px] px-5 mx-auto py-10">
+      <section
+        className="bg-gray-50 my-10 h-4/5
+  mx-2 md:mx-4 lg:mx-[100px] xl:mx-[200px] 
+  rounded-2xl 
+  bg-opacity-10 
+  backdrop-filter 
+  backdrop-saturate-150 
+  backdrop-blur-xl 
+  shadow-lg 
+  px-4 md:px-6 lg:px-8 xl:px-10 
+  py-4 md:py-6 lg:py-8 xl:py-10 
+  "
+      >
+        <div className="font-queens mx-0 px-0">
           {loading && (
-            <div className="flex items-center justify-center w-full h-full">
+            <div className="flex items-center justify-center ">
               <HashLoader color="#0067FF" />
             </div>
           )}
           {error && !loading && (
             <div className="flex items-center justify-center w-full h-full">
-              <h3 className="text-headingColor text-[20px] font-semibold leading-[30px]">
+              <h3 className="text-headingColor text-[16px] md:text-[18px] lg:text-[20px] xl:text-[22px] font-semibold leading-[24px] md:leading-[26px] lg:leading-[28px] xl:leading-[30px]">
                 {error}
               </h3>
             </div>
           )}
 
           {!loading && !error && (
-            <div className="grid md:grid-cols-4 gap-10">
+            <div className="grid grid-cols-1 md:grid-cols-8 gap-6 md:gap-4 lg:gap-2 xl:gap-4">
               {/* Sidebar */}
-              <div className="md:col-span-1  pb-[50px] rounded-lg  bg-white bg-opacity-10 backdrop-filter backdrop-saturate-150 backdrop-blur-xl shadow-lg px-5 py-1 min-w-[150px]">
-                <div className="flex items-center justify-center py-3">
-                  <figure className="w-[100px] h-[100px] rounded-full">
+              <div className="md:col-span-1 pb-8 md:pb-12 lg:pb-16 bg-white bg-opacity-10 backdrop-filter backdrop-saturate-150 backdrop-blur-xl shadow-lg px-4 md:px-6 lg:px-8 xl:px-10 py-4 md:py-6 lg:py-8 xl:py-10 rounded-lg">
+                <div className="flex items-center justify-center py-4">
+                  <figure className="w-[50px] h-[50px] md:w-[40px] md:h-[40px] rounded-full overflow-hidden">
                     <img
                       src={userData?.photo}
-                      alt=""
-                      className="w-[100px] h-[100px] rounded-full"
+                      alt="User"
+                      className="w-full h-full object-cover"
                     />
                   </figure>
                 </div>
 
                 <div className="text-center mt-4">
-                  <h3 className="text-[18px] leading-[30px] text-headingColor font-bold">
+                  <h3 className="text-[15px] md:text-[10px] lg:text-[15px] xl:text-[20px] leading-[24px] md:leading-[26px] lg:leading-[28px] xl:leading-[30px] text-headingColor font-bold">
                     {userData?.username}
                   </h3>
-                  <p className="text-textColor text-[15px] leading-6 font-medium">
-                    Email: {userData?.email}
-                  </p>
+                  {/* <p className="text-textColor text-[15px] md:text-[10px] lg:text-[15px] xl:text-[20px] leading-[20px] md:leading-[22px] lg:leading-[24px] xl:leading-[26px] font-medium">
+                    {userData?.email}
+                  </p> */}
                 </div>
 
-                <div className="mt-[50px] md:mt-[100px]">
+                <div className="mt-8 md:mt-10 lg:mt-12 xl:mt-14">
                   <button
                     onClick={() => setTab("journals")}
                     className={`${
                       tab === "journals" &&
-                      " bg-white bg-opacity-10 backdrop-filter backdrop-saturate-150 backdrop-blur-xl shadow-lg px-5 py-1 min-w-[150px] text-center transition duration-300 ease-in-out hover:scale-110 text-black font-normal"
-                    } w-full mb-4 p-3 rounded-md text-headingColor font-semibold text-[16px] leading-7`}
+                      "bg-white bg-opacity-10 backdrop-filter backdrop-saturate-150 backdrop-blur-xl shadow-lg px-4 py-2 text-center transition duration-300 ease-in-out hover:scale-110 text-black font-normal"
+                    } w-full mb-4 p-3 rounded-md text-headingColor font-semibold text-[14px] md:text-[16px] leading-7`}
                   >
-                    My Journals
+                    <BsJournals />
                   </button>
                   <button
                     onClick={() => setTab("gallery")}
                     className={`${
                       tab === "gallery" &&
-                      "bg-white bg-opacity-10 backdrop-filter backdrop-saturate-150 backdrop-blur-xl shadow-lg px-5 py-1 min-w-[150px] text-center transition duration-300 ease-in-out hover:scale-110 text-black font-normal"
-                    } w-full mb-4 p-3 rounded-md text-headingColor font-semibold text-[16px] leading-7`}
+                      "bg-white bg-opacity-10 backdrop-filter backdrop-saturate-150 backdrop-blur-xl shadow-lg px-4 py-2 text-center transition duration-300 ease-in-out hover:scale-110 text-black font-normal"
+                    } w-full mb-4 p-3 rounded-md text-headingColor font-semibold text-[14px] md:text-[16px] leading-7`}
                   >
-                    Gallery
+                    <GrGallery />
                   </button>
                   <button
                     onClick={() => setTab("settings")}
                     className={`${
                       tab === "settings" &&
-                      "bg-white bg-opacity-10 backdrop-filter backdrop-saturate-150 backdrop-blur-xl shadow-lg px-5 py-1 min-w-[150px] text-center transition duration-300 ease-in-out hover:scale-110 text-black font-normal"
-                    } w-full mb-4 p-3 rounded-md text-headingColor font-semibold text-[16px] leading-7`}
+                      "bg-white bg-opacity-10 backdrop-filter backdrop-saturate-150 backdrop-blur-xl shadow-lg px-4 py-2 text-center transition duration-300 ease-in-out hover:scale-110 text-black font-normal"
+                    } w-full mb-4 p-3 rounded-md text-headingColor font-semibold text-[14px] md:text-[16px] leading-7`}
                   >
-                    Settings
+                    <IoSettingsOutline />
                   </button>
                   <button
                     onClick={handleLogout}
-                    className="w-full bg-[#181A1E] mb-4 p-3 rounded-md text-white text-[16px] leading-7"
+                    className="w-full mb-4 p-3 rounded-md text-[14px] md:text-[16px] leading-7"
                   >
-                    Logout
+                    <CiLogout />
                   </button>
                   <button
                     onClick={handleDelete}
-                    className="w-full bg-red-600 p-3 rounded-md text-white text-[16px] leading-7"
+                    className="w-full p-3 rounded-md text-[14px] md:text-[16px] leading-7"
                   >
-                    Delete Account
+                    <RiDeleteBin6Line />
                   </button>
                 </div>
               </div>
 
               {/* Main Content */}
-              <div className="md:col-span-3 md:px-[30px]">
-                <div className="mt-[50px]">
+              <div className="md:col-span-7 ">
+                <div className="mt-8 md:mt-10 lg:mt-12 xl:mt-14">
                   {tab === "journals" && (
                     <div>
-                      <h2 className="heading text-[30px] font-semibold mb-5">
+                      {/* <h2 className="pl-5 md:pl-8 lg:pl-10 xl:pl-40 heading text-[24px] md:text-[26px] lg:text-[28px] xl:text-[30px] font-semibold mb-4 md:mb-6 lg:mb-8 xl:mb-10">
                         My Journals
-                      </h2>
+                      </h2> */}
                       <MyJournal />
                     </div>
                   )}
                   {tab === "gallery" && (
                     <div>
-                      <h2 className="heading text-[30px] font-semibold mb-5">
+                      <h2 className="heading text-[24px] md:text-[26px] lg:text-[28px] xl:text-[30px] font-semibold mb-4 md:mb-6 lg:mb-8 xl:mb-10">
                         Emotion Gallery
                       </h2>
                       <EmotionGallery />
@@ -154,7 +169,7 @@ const MyAccount = () => {
                   )}
                   {tab === "settings" && (
                     <div>
-                      <h2 className="heading text-[30px] font-semibold mb-5">
+                      <h2 className="heading text-[24px] md:text-[26px] lg:text-[28px] xl:text-[30px] font-semibold mb-4 md:mb-6 lg:mb-8 xl:mb-10">
                         Profile Settings
                       </h2>
                       <Profile userData={userData} />

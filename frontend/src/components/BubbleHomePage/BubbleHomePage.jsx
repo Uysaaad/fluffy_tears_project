@@ -61,7 +61,7 @@ const BubbleHomePage = () => {
     function applyNoiseTexture() {
       const bgElement = document.querySelector(".gradient-bg");
       const noiseTexture = generateNoiseTexture();
-      bgElement.style.backgroundImage = `url(${noiseTexture}), linear-gradient(to bottom, #F87AAF, #6F86A8)`;
+      bgElement.style.backgroundImage = `url(${noiseTexture}), linear-gradient(to bottom, #6F86A8, #F3EFDC)`;
       bgElement.style.backgroundBlendMode = "overlay";
     }
 
