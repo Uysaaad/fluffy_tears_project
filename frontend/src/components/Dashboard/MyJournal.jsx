@@ -7,7 +7,10 @@ import { toast } from "react-toastify";
 import { createIllustrationSketch } from "../../utils/illustrationSketch";
 import p5 from "p5";
 import { FiPlus } from "react-icons/fi";
-import FlipPage from "react-flip-page";
+import { PiPencilLineThin } from "react-icons/pi";
+import { MdOutlineNavigateNext } from "react-icons/md";
+import { MdOutlineNavigateBefore } from "react-icons/md";
+import { CiFaceSmile } from "react-icons/ci";
 
 const MyJournal = () => {
   const { token } = useContext(AuthContext);
@@ -189,10 +192,9 @@ const MyJournal = () => {
   const renderContent = () => {
     if (currentPage === 0) {
       return (
-        <div className="flex items-center justify-center h-full w-full rounded-tr-lg rounded-br-lg bg-[#DDC2E1] opacity-70">
-          <h1 className="font-riesling text-[#D5767F] text-[100px]">
-            Dear Diary
-          </h1>
+        <div className="flex items-center justify-center flex-col h-full w-full rounded-tr-lg rounded-br-lg bg-[#DDC2E1]">
+          <h1 className="font-riesling text-[#D5767F] text-[200px]">Dear</h1>
+          <h1 className="font-riesling text-[#D5767F] text-[150px]">Diary</h1>
         </div>
       );
     } else {
@@ -207,63 +209,67 @@ const MyJournal = () => {
       console.log(`Content: ${content}`);
 
       return (
-        <div className="p-4 md:p-6 lg:p-8 xl:p-10 flex flex-col justify-between h-full">
+        <div className="font-quicksand rounded-tr-lg rounded-br-lg p-4 md:p-6 lg:p-8 xl:p-10 flex flex-col h-full bg-[#caa6aa]">
           <div>
-            <h3 className="text-lg md:text-xl lg:text-2xl font-semibold">
+            <span className="flex flex-row justify-between text-gray-700">
+              <p className="text-sm md:text-base lg:text- text-gray-600">
+                {formattedDate}
+              </p>
+              <CiFaceSmile />
+              <div className="self-end flex flex-row">
+                <p className="text-sm text-gray-500">Page {currentPage}</p>
+              </div>
+            </span>
+
+            <hr className="border-[#10477D]" />
+            <h3 className="pt-4 text-[#10477D] text-lg md:text-xl lg:text-2xl font-semibold">
               {title}
             </h3>
-            <p className="text-sm md:text-base lg:text-lg text-gray-600">
-              {formattedDate}
-            </p>
-            <p className="mt-2 text-[14px] md:text-[16px] lg:text-[18px] xl:text-[20px]">
+
+            <p className="pb-4 text-[#10477D] mt-2 text-[14px] md:text-[16px] lg:text-[18px] xl:text-[20px]">
               {content}
             </p>
+            <hr className="border-[#10477D]" />
           </div>
-          <div className="flex justify-end space-x-2 mt-4">
+          <div className="flex justify-start space-x-2 mt-3">
             <button
               onClick={() => handlePredict(journalId, content)}
-              className="px-4 py-2 bg-green-500 text-white rounded-md text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px]"
+              className=" text-[#10477D] rounded-md text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]"
             >
               Predict
             </button>
             <button
               onClick={() => handleDeleteJournal(journalId)}
-              className="px-4 py-2 bg-red-500 text-white rounded-md text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px]"
+              className="pr-3 text-white text-sm"
             >
               Delete
             </button>
           </div>
           {predictions[journalId] && predictions[journalId].length > 0 && (
-            <div className="mt-4">
-              <h4 className="text-md md:text-lg lg:text-xl font-semibold">
-                Predictions:
-              </h4>
+            <div className="mt-4 w-full h-full">
+              {/* <h4 className="text-sm">Predictions:</h4>
               <ul className="list-disc ml-5">
                 {predictions[journalId].map((prediction, index) => (
-                  <li
-                    key={`${journalId}-${index}`}
-                    className="text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px]"
-                  >
+                  <li key={`${journalId}-${index}`} className="text-sm">
                     {prediction.label}: {prediction.probability.toFixed(4)}
                   </li>
                 ))}
-              </ul>
-              <div
-                id={`sketch-container-${journalId}`}
-                className="mt-4"
-                style={{ width: "100%", height: "400px" }}
-              ></div>
-              <button
-                onClick={() => handleAddToGallery(journalId)}
-                className="px-4 py-2 bg-blue-500 text-white rounded-md mt-4 text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px]"
-              >
-                Add to Gallery
-              </button>
+              </ul> */}
+              <div>
+                <div
+                  id={`sketch-container-${journalId}`}
+                  className="mt-4"
+                  style={{ width: "100%", height: "100vh" }}
+                ></div>
+                <button
+                  onClick={() => handleAddToGallery(journalId)}
+                  className="px-4 py-2 text-white"
+                >
+                  Add to Gallery
+                </button>
+              </div>
             </div>
           )}
-          <div className="self-end mt-4">
-            <p className="text-sm text-gray-500">Page {currentPage}</p>
-          </div>
         </div>
       );
     }
@@ -301,9 +307,9 @@ const MyJournal = () => {
           <div className="text-right mb-4">
             <button
               onClick={handleAddJournal}
-              className="py-2 px-4 rounded-md text-[14px] md:text-[16px] lg:text-[18px] xl:text-[20px]"
+              className="py-2 px-4 rounded-md text-[18px] md:text-[20px] lg:text-[30px] xl:text-[40px]"
             >
-              <FiPlus />
+              <PiPencilLineThin />
             </button>
           </div>
           <div className="rounded-tr-2xl rounded-br-2xl shadow-custom w-[350px] h-[500px] flex items-center justify-center mx-auto my-auto">
@@ -315,17 +321,17 @@ const MyJournal = () => {
               onClick={() => turnPage(-1)}
               disabled={currentPage === 0}
               id="prevPage"
-              className="px-4 py-2 bg-gray-300 rounded-md text-[14px] md:text-[16px] lg:text-[18px] xl:text-[20px] mr-2"
+              className="px-4 py-2 text-gray-700 text-[14px] md:text-[16px] lg:text-[18px] xl:text-[20px] mr-2"
             >
-              &lt; Previous
+              <MdOutlineNavigateBefore />
             </button>
             <button
               onClick={() => turnPage(1)}
               disabled={currentPage === journals.length}
               id="nextPage"
-              className="px-4 py-2 bg-gray-300 rounded-md text-[14px] md:text-[16px] lg:text-[18px] xl:text-[20px]"
+              className="px-4 py-2 text-gray-700 text-[14px] md:text-[16px] lg:text-[18px] xl:text-[20px]"
             >
-              Next &gt;
+              <MdOutlineNavigateNext />
             </button>
           </div>
         </div>

@@ -1,5 +1,3 @@
-import p5 from "p5";
-
 export const createIllustrationSketch = (
   predictedValues,
   setIllustrations,
@@ -33,7 +31,7 @@ export const createIllustrationSketch = (
       const container = document.getElementById(containerId);
       w = container.offsetWidth;
       h = container.offsetHeight;
-      scaling = 0.9;
+      scaling = 0.2; // Adjust the scaling factor here if needed
 
       p.pixelDensity(1);
       p.createCanvas(w, h).parent(container);

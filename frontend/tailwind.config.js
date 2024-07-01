@@ -49,7 +49,8 @@ module.exports = {
         tears:
           "url('https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExd3B1aXl6cGVybnNwemgxd3pyMTF4eG9zMHZtM2lkZ2Y5ZnAycGo1cSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/tsgPJ5y0MrklJWst2N/giphy.gif')",
         login: "url('./src/assets/images/square.gif')",
-        diary:"url('./src/assets/images/diary_cover.jpg)"
+        diary: "url('./src/assets/images/diary_cover.jpg)",
+        faces:"url('./src/assets/images/faces.jpg"
       },
     },
   },
