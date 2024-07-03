@@ -2,6 +2,8 @@ import React, { useState, useContext } from "react";
 import { BASE_URL, getToken } from "../../config";
 import { AuthContext } from "../../context/AuthContext";
 import { toast } from "react-toastify";
+import { MdOutlineCancel } from "react-icons/md";
+import { MdOutlineDone } from "react-icons/md";
 
 const AddJournal = ({ isOpen, onClose, onJournalAdded }) => {
   const { token } = useContext(AuthContext);
@@ -47,44 +49,47 @@ const AddJournal = ({ isOpen, onClose, onJournalAdded }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg">
-        <h2 className="text-xl font-bold mb-4">Add Journal</h2>
+    <div className="font-quicksand fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-[#D3F4C7] p-6 rounded-tr-lg rounded-br-lg shadow-lg w-[300px] h-[400px] lg:w-[450px] lg:h-[600px] xl:w-[600px] xl:h-[800px]">
+        <div className="flex flex-row justify-between">
+          <h2 className="text-[#10477D] text-lg font-bold mb-4">Dear Diary,</h2>
+          <button type="button" onClick={onClose} className="mb-4 text-red-400 text-[20px] hover:text-red-900">
+            <MdOutlineCancel />
+          </button>
+        </div>
+
         {error && <p className="text-red-500">{error}</p>}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-sm font-bold mb-2">Title</label>
+            <label className="block text-sm font-bold mb-2 text-[#10477D]">
+              Title
+            </label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full p-2 border rounded-md"
+              className="w-full bg-[#D3F4C7] border-b-[0.5px] border-[#10477D] text-[#10477D]"
               required
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-bold mb-2">Content</label>
+            <label className="block text-sm font-bold mb-2 text-[#10477D]">
+              Content
+            </label>
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className="w-full p-2 border rounded-md"
+              className="w-full h-[200px] bg-[#D3F4C7] border-b-[0.5px] border-[#10477D] text-[#10477D]"
               required
             ></textarea>
           </div>
           <div className="flex justify-end">
             <button
-              type="button"
-              onClick={onClose}
-              className="mr-2 px-4 py-2 bg-gray-300 rounded-md"
-            >
-              Cancel
-            </button>
-            <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 bg-blue-500 text-white rounded-md"
+              className="px-2 py-2  text-[#10477D] rounded-full border border-[#10477D] hover:text-white hover:bg-[#10477D]"
             >
-              {loading ? "Adding..." : "Add Journal"}
+              {loading ? "Adding..." : <MdOutlineDone />}
             </button>
           </div>
         </form>

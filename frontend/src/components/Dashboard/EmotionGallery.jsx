@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { BASE_URL } from "../../config";
 import { toast } from "react-toastify";
 import HashLoader from "react-spinners/HashLoader";
+import EmotionGalleryItem from "./EmotionGalleryItem"; // Ensure this path is correct
 
 const EmotionGallery = () => {
   const [emotions, setEmotions] = useState([]);
@@ -58,33 +59,22 @@ const EmotionGallery = () => {
   };
 
   return (
-    
-    <div>
+    <div className="max-w-4xl mx-auto p-4">
       {loading ? (
         <div className="flex items-center justify-center w-full h-full">
           <HashLoader color="#0067FF" />
         </div>
       ) : (
-        <div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {emotions.map((emotion) => (
-              <div key={emotion._id} className="border p-4 rounded-md">
-                <p>{emotion.text}</p>
-                <p>{emotion.emotion}</p>
-                <img
-                  src={emotion.illustration}
-                  alt="illustration"
-                  className="w-full"
-                />
-                <button
-                  onClick={() => handleDelete(emotion._id)}
-                  className="mt-2 bg-red-600 text-white py-2 px-4 rounded"
-                >
-                  Delete
-                </button>
-              </div>
-            ))}
-          </div>
+        <div className="relative">
+          <div className="border-l-2 border-gray-200 absolute h-full left-1/2 transform -translate-x-1/2"></div>
+          {emotions.map((emotion, index) => (
+            <EmotionGalleryItem
+              key={emotion._id}
+              emotion={emotion}
+              handleDelete={handleDelete}
+              isLeft={index % 2 === 0}
+            />
+          ))}
         </div>
       )}
     </div>

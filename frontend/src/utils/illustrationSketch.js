@@ -4,11 +4,11 @@ export const createIllustrationSketch = (
   journalId,
   containerId
 ) => {
-  const colors = {
-    anger: "#FF4500", // OrangeRed
-    joy: "#FFD700", // Gold
-    fear: "#000000", // Black
-    sadness: "#1E90FF", // DodgerBlue
+  const morandiColors = {
+    anger: ["#F782C8", "#FE6F9A", "#E58BA6"],
+    joy: ["#FFFF63", "#FFFFAA", "#FAFABE", "#EF87C5"],
+    fear: ["#85E64F", "#B5E998", "#B6F5C0"],
+    sadness: ["#BFC3E6", "#6F79D7", "#C5D6E4"],
   };
 
   const values = predictedValues.reduce((acc, { label, probability }) => {
@@ -20,9 +20,16 @@ export const createIllustrationSketch = (
     (a, b) => values[b] - values[a]
   );
 
-  const primaryColor = colors[sortedEmotions[0]] || "#2A292E"; // Default color
-  const secondaryColor = colors[sortedEmotions[1]] || "#9E2721"; // Default sun color
-  const shadowColor = colors[sortedEmotions[2]] || "#7C7B80"; // Default shadow color
+  const primaryColors = morandiColors[sortedEmotions[0]] || ["#2A292E"];
+  const secondaryColors = morandiColors[sortedEmotions[1]] || ["#9E2721"];
+  const shadowColors = morandiColors[sortedEmotions[2]] || ["#7C7B80"];
+
+  const getRandomColor = (colorArray) =>
+    colorArray[Math.floor(Math.random() * colorArray.length)];
+
+  const primaryColor = getRandomColor(primaryColors);
+  const secondaryColor = getRandomColor(secondaryColors);
+  const shadowColor = getRandomColor(shadowColors);
 
   return (p) => {
     let scaling, w, h;
@@ -42,8 +49,8 @@ export const createIllustrationSketch = (
       p.noStroke();
 
       p.drawingContext.shadowColor = shadowColor;
-      p.drawingContext.shadowBlur = 200;
-      p.drawingContext.shadowOffsetY = 20;
+      p.drawingContext.shadowBlur = 1000;
+      p.drawingContext.shadowOffsetY = 0;
       drawMountains(p, primaryColor);
       addTexture(p, w, h);
 
@@ -79,8 +86,12 @@ export const createIllustrationSketch = (
       p.drawingContext.shadowOffsetY = 5;
       p.rect(-200 * scaling, -500, w + 400 * scaling, 400);
 
-      p.fill(secondaryColor);
-      p.circle(w / 3, 60, 90);
+      const sunX = p.random(w);
+      const sunY = p.random(60, 120);
+      const sunSize = p.random(40, 70);
+      const sunColor = getRandomColor(secondaryColors);
+      p.fill(sunColor);
+      p.circle(sunX, sunY, sunSize);
     };
 
     const addTexture = (p, width, height) => {

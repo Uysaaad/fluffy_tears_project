@@ -67,9 +67,9 @@ const Profile = ({ userData }) => {
   };
 
   return (
-    <div>
+    <div className="font-graydesign">
       <form onSubmit={updateUserHandler}>
-        <div className="mb-5">
+        <div className="mb-5 ">
           <input
             type="text"
             name="name"

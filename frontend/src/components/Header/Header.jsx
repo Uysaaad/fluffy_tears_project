@@ -6,17 +6,6 @@ import { AuthContext } from "./../../context/AuthContext";
 
 import userImg from "../../assets/images/flower.webp";
 
-const navLinks = [
-  {
-    path: "/",
-    display: "Home",
-  },
-  {
-    path: "contact",
-    display: "Contact",
-  },
-];
-
 const Header = () => {
   const { token, user } = useContext(AuthContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -52,6 +41,18 @@ const Header = () => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
   }, []);
+
+  // Define navLinks based on the authentication status
+  const navLinks = [
+    {
+      path: "/",
+      display: "Home",
+    },
+    {
+      path: token ? "users/profile/me" : "/login",
+      display: "Journal",
+    },
+  ];
 
   return (
     <header className="header flex items-center py-2">

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { BASE_URL, getToken } from "../../config";
 import { AuthContext } from "../../context/AuthContext";
 import HashLoader from "react-spinners/HashLoader";
@@ -11,6 +11,13 @@ import { PiPencilLineThin } from "react-icons/pi";
 import { MdOutlineNavigateNext } from "react-icons/md";
 import { MdOutlineNavigateBefore } from "react-icons/md";
 import { CiFaceSmile } from "react-icons/ci";
+import { RiDeleteBinLine } from "react-icons/ri";
+import HorizontalBar from "./HorizontalBar";
+import PieChart from "./PieChart";
+import { MdOutlineCancel } from "react-icons/md";
+import Card from "../../assets/images/card.jpg"
+
+
 
 const MyJournal = () => {
   const { token } = useContext(AuthContext);
@@ -21,6 +28,8 @@ const MyJournal = () => {
   const [predictions, setPredictions] = useState({});
   const [illustrations, setIllustrations] = useState({});
   const [currentPage, setCurrentPage] = useState(0);
+  const [currentJournalId, setCurrentJournalId] = useState(null);
+  const sketchContainerRef = useRef(null);
 
   useEffect(() => {
     const fetchJournals = async () => {
@@ -106,26 +115,45 @@ const MyJournal = () => {
           [journalId]: result.data,
         }));
         toast.success("Journal processed successfully!");
-
-        // Wait for the container to render before creating the p5 instance
-        setTimeout(() => {
-          const containerId = `sketch-container-${journalId}`;
-          new p5(
-            createIllustrationSketch(
-              result.data,
-              setIllustrations,
-              journalId,
-              containerId
-            ),
-            document.getElementById(containerId)
-          );
-        }, 0);
       } else {
         toast.error("Failed to process journal.");
       }
     } catch (err) {
       toast.error("Failed to process journal.");
     }
+  };
+
+  const handleCancel = (journalId) => {
+    setPredictions((prevPredictions) => {
+      const updatedPredictions = { ...prevPredictions };
+      delete updatedPredictions[journalId];
+      return updatedPredictions;
+    });
+  };
+
+
+  const handleVisualize = (journalId) => {
+    setCurrentJournalId(journalId);
+    setTimeout(() => {
+      const container = sketchContainerRef.current;
+      if (
+        container &&
+        container.offsetWidth > 0 &&
+        container.offsetHeight > 0
+      ) {
+        new p5(
+          createIllustrationSketch(
+            predictions[journalId],
+            setIllustrations,
+            journalId,
+            `sketch-container-${journalId}`
+          ),
+          container
+        );
+      } else {
+        console.error("Container dimensions are invalid.");
+      }
+    }, 500); // Delay to allow the container to be fully rendered
   };
 
   const handleAddToGallery = async (journalId) => {
@@ -170,6 +198,7 @@ const MyJournal = () => {
           return updatedPredictions;
         });
         setCurrentPage(0);
+        setCurrentJournalId(null);
       }
     } catch (err) {
       toast.error(err.message || "Failed to add illustration to gallery.");
@@ -192,7 +221,7 @@ const MyJournal = () => {
   const renderContent = () => {
     if (currentPage === 0) {
       return (
-        <div className="flex items-center justify-center flex-col h-full w-full rounded-tr-lg rounded-br-lg bg-[#DDC2E1]">
+        <div className="flex items-center justify-center flex-col h-full w-full rounded-tr-lg rounded-br-lg bg-babyPinkColor sm:h-full sm:w-full">
           <h1 className="font-riesling text-[#D5767F] text-[200px]">Dear</h1>
           <h1 className="font-riesling text-[#D5767F] text-[150px]">Diary</h1>
         </div>
@@ -204,12 +233,8 @@ const MyJournal = () => {
         ? new Date(createdAt).toLocaleDateString()
         : "Unknown date";
 
-      console.log(`Rendering journal with id: ${journalId}`);
-      console.log(`Title: ${title}`);
-      console.log(`Content: ${content}`);
-
       return (
-        <div className="font-quicksand rounded-tr-lg rounded-br-lg p-4 md:p-6 lg:p-8 xl:p-10 flex flex-col h-full bg-[#caa6aa]">
+        <div className="font-quicksand rounded-tr-lg rounded-br-lg p-4 md:p-6 lg:p-8 xl:p-10 flex flex-col h-full bg-babyPinkColor">
           <div>
             <span className="flex flex-row justify-between text-gray-700">
               <p className="text-sm md:text-base lg:text- text-gray-600">
@@ -222,50 +247,47 @@ const MyJournal = () => {
             </span>
 
             <hr className="border-[#10477D]" />
-            <h3 className="pt-4 text-[#10477D] text-lg md:text-xl lg:text-2xl font-semibold">
-              {title}
-            </h3>
+            <div className="flex flex-row justify-between">
+              <h3 className="pt-4 text-[#10477D] text-md md:text-lg lg:text-xl font-semibold">
+                {title}
+              </h3>
+              <button
+                onClick={() => handleDeleteJournal(journalId)}
+                className="text-[#D5767F] pt-2"
+              >
+                <RiDeleteBinLine />
+              </button>
+            </div>
 
-            <p className="pb-4 text-[#10477D] mt-2 text-[14px] md:text-[16px] lg:text-[18px] xl:text-[20px]">
-              {content}
-            </p>
+            <p className="pb-4 text-[#10477D] mt-2 text-[14px]">{content}</p>
             <hr className="border-[#10477D]" />
           </div>
-          <div className="flex justify-start space-x-2 mt-3">
+          <div className="flex justify-between space-x-2 mt-3">
             <button
               onClick={() => handlePredict(journalId, content)}
-              className=" text-[#10477D] rounded-md text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]"
+              className=" py-[1px] px-[10px] text-[#10477D] border-[0.5px] border-[#10477D] rounded-xl text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px] hover:text-white hover:bg-[#10477D]"
             >
               Predict
             </button>
             <button
-              onClick={() => handleDeleteJournal(journalId)}
-              className="pr-3 text-white text-sm"
+              onClick={() => handleCancel(journalId)}
+              className="text-gray-500"
             >
-              Delete
+              <MdOutlineCancel />
             </button>
           </div>
           {predictions[journalId] && predictions[journalId].length > 0 && (
-            <div className="mt-4 w-full h-full">
-              {/* <h4 className="text-sm">Predictions:</h4>
-              <ul className="list-disc ml-5">
-                {predictions[journalId].map((prediction, index) => (
-                  <li key={`${journalId}-${index}`} className="text-sm">
-                    {prediction.label}: {prediction.probability.toFixed(4)}
-                  </li>
-                ))}
-              </ul> */}
-              <div>
-                <div
-                  id={`sketch-container-${journalId}`}
-                  className="mt-4"
-                  style={{ width: "100%", height: "100vh" }}
-                ></div>
+            <div className="mt-4 w-full h-full font-quicksand">
+              <h4 className="text-sm">Predictions:</h4>
+              <div className="w-[200px] font-quicksand">
+                <PieChart data={predictions[journalId]} />
+              </div>
+              <div className="flex flex-row justify-between">
                 <button
-                  onClick={() => handleAddToGallery(journalId)}
-                  className="px-4 py-2 text-white"
+                  onClick={() => handleVisualize(journalId)}
+                  className="text-[10px] px-[6px] py-[2px] mt-3  border-[#10477D] border-[0.5px] rounded-xl text-[#10477D] hover:text-white hover:bg-[#10477D]"
                 >
-                  Add to Gallery
+                  Draw my emotion
                 </button>
               </div>
             </div>
@@ -304,15 +326,21 @@ const MyJournal = () => {
       )}
       {!loading && !error && journals.length > 0 && (
         <div className="">
-          <div className="text-right mb-4">
+          <div className="text-right mb-4 flex flex-row justify-center">
+            <img
+              src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExZHFkbHlqeGdlcXlkYms4b3FrZ3ZqMTN6cW1oZHkxNWJ0bHhiZnVldyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9dHM/ooeyQwQzrFo4exrDqg/giphy.gif"
+              alt=""
+              className="w-[100px] "
+            />
+       
             <button
               onClick={handleAddJournal}
-              className="py-2 px-4 rounded-md text-[18px] md:text-[20px] lg:text-[30px] xl:text-[40px]"
+              className="py-2 text-gray-700 rounded-md text-[18px] md:text-[10px] lg:text-[20px] xl:text-[30px]"
             >
               <PiPencilLineThin />
             </button>
           </div>
-          <div className="rounded-tr-2xl rounded-br-2xl shadow-custom w-[350px] h-[500px] flex items-center justify-center mx-auto my-auto">
+          <div className="rounded-tr-2xl rounded-br-2xl shadow-custom w-[380px] h-[600px] flex items-center justify-center mx-auto my-auto">
             {renderContent()}
           </div>
 
@@ -336,11 +364,42 @@ const MyJournal = () => {
           </div>
         </div>
       )}
-      <AddJournal
-        isOpen={isAddJournalOpen}
-        onClose={() => setIsAddJournalOpen(false)}
-        onJournalAdded={handleJournalAdded}
-      />
+      {isAddJournalOpen && (
+        <AddJournal
+          isOpen={isAddJournalOpen}
+          onClose={() => setIsAddJournalOpen(false)}
+          onJournalAdded={handleJournalAdded}
+        />
+      )}
+      {currentJournalId && (
+        <div className="font-quicksand fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-babyPinkColor p-4 rounded-lg">
+            <div className="flex flex-row justify-between">
+              <h3 className="text-lg mb-5">Illustration for Your Emotion</h3>
+              <button
+                onClick={() => setCurrentJournalId(null)}
+                className="mb-5 text-[#10477D]"
+              >
+                <MdOutlineCancel />
+              </button>
+            </div>
+
+            <div
+              id={`sketch-container-${currentJournalId}`}
+              ref={sketchContainerRef}
+              style={{ width: "400px", height: "300px" }}
+            ></div>
+            <div className="flex justify-end space-x-2 mt-4">
+              <button
+                onClick={() => handleAddToGallery(currentJournalId)}
+                className="text-[13px] px-4 py-2 border border-[#10477D] text-[#10477D] rounded-xl hover:bg-[#10477D] hover:text-white"
+              >
+                Add to Gallery
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

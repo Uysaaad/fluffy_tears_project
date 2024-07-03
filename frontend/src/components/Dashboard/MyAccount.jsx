@@ -96,14 +96,14 @@ const MyAccount = () => {
                   </figure>
                 </div>
 
-                <div className="text-center mt-4">
-                  <h3 className="text-[15px] md:text-[10px] lg:text-[15px] xl:text-[20px] leading-[24px] md:leading-[26px] lg:leading-[28px] xl:leading-[30px] text-headingColor font-bold">
+                {/* <div className="text-center mt-4"> */}
+                  {/* <h3 className="text-[15px] md:text-[10px] lg:text-[15px] xl:text-[20px] leading-[24px] md:leading-[26px] lg:leading-[28px] xl:leading-[30px] text-headingColor font-bold">
                     {userData?.username}
-                  </h3>
+                  </h3> */}
                   {/* <p className="text-textColor text-[15px] md:text-[10px] lg:text-[15px] xl:text-[20px] leading-[20px] md:leading-[22px] lg:leading-[24px] xl:leading-[26px] font-medium">
                     {userData?.email}
                   </p> */}
-                </div>
+                {/* </div> */}
 
                 <div className="mt-8 md:mt-10 lg:mt-12 xl:mt-14">
                   <button
@@ -161,9 +161,9 @@ const MyAccount = () => {
                   )}
                   {tab === "gallery" && (
                     <div>
-                      <h2 className="heading text-[24px] md:text-[26px] lg:text-[28px] xl:text-[30px] font-semibold mb-4 md:mb-6 lg:mb-8 xl:mb-10">
-                        Emotion Gallery
-                      </h2>
+                      {/* <h2 className="heading text-[24px] md:text-[26px] lg:text-[28px] xl:text-[30px] font-semibold mb-4 md:mb-6 lg:mb-8 xl:mb-10">
+                        
+                      </h2> */}
                       <EmotionGallery />
                     </div>
                   )}
