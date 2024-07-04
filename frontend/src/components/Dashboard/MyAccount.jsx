@@ -1,7 +1,8 @@
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import MyJournal from "./MyJournal";
 import Profile from "./Profile";
 import EmotionGallery from "./EmotionGallery";
+import Garden from "./Garden";
 import { BASE_URL } from "../../config";
 import useFetchData from "../../hooks/useFetchData";
 import HashLoader from "react-spinners/HashLoader";
@@ -15,8 +16,15 @@ import { GrGallery } from "react-icons/gr";
 import { IoSettingsOutline } from "react-icons/io5";
 import { CiLogout } from "react-icons/ci";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { GiFlowerPot } from "react-icons/gi";
+
 const MyAccount = () => {
   const [tab, setTab] = useState("journals");
+  const [gardenState, setGardenState] = useState({
+    seeds: 0,
+    sun: 0,
+    water: 0,
+  });
   const {
     data: userData,
     loading,
@@ -50,6 +58,16 @@ const MyAccount = () => {
       console.error("Error deleting account:", err);
       toast.error("Failed to delete account.");
     }
+  };
+
+  const updateGarden = (emotion) => {
+    setGardenState((prev) => {
+      let newState = { ...prev };
+      if (emotion === "joy") newState.sun += 1;
+      if (emotion === "sadness") newState.water += 1;
+      if (emotion === "seed") newState.seeds += 1;
+      return newState;
+    });
   };
 
   return (
@@ -96,15 +114,6 @@ const MyAccount = () => {
                   </figure>
                 </div>
 
-                {/* <div className="text-center mt-4"> */}
-                  {/* <h3 className="text-[15px] md:text-[10px] lg:text-[15px] xl:text-[20px] leading-[24px] md:leading-[26px] lg:leading-[28px] xl:leading-[30px] text-headingColor font-bold">
-                    {userData?.username}
-                  </h3> */}
-                  {/* <p className="text-textColor text-[15px] md:text-[10px] lg:text-[15px] xl:text-[20px] leading-[20px] md:leading-[22px] lg:leading-[24px] xl:leading-[26px] font-medium">
-                    {userData?.email}
-                  </p> */}
-                {/* </div> */}
-
                 <div className="mt-8 md:mt-10 lg:mt-12 xl:mt-14">
                   <button
                     onClick={() => setTab("journals")}
@@ -125,6 +134,15 @@ const MyAccount = () => {
                     <GrGallery />
                   </button>
                   <button
+                    onClick={() => setTab("garden")}
+                    className={`${
+                      tab === "garden" &&
+                      "bg-white bg-opacity-10 backdrop-filter backdrop-saturate-150 backdrop-blur-xl shadow-lg px-4 py-2 text-center transition duration-300 ease-in-out hover:scale-110 text-black font-normal"
+                    } w-full mb-4 p-3 rounded-md text-headingColor font-semibold text-[14px] md:text-[16px] leading-7`}
+                  >
+                    <GiFlowerPot />
+                  </button>
+                  {/* <button
                     onClick={() => setTab("settings")}
                     className={`${
                       tab === "settings" &&
@@ -132,7 +150,8 @@ const MyAccount = () => {
                     } w-full mb-4 p-3 rounded-md text-headingColor font-semibold text-[14px] md:text-[16px] leading-7`}
                   >
                     <IoSettingsOutline />
-                  </button>
+                  </button> */}
+
                   <button
                     onClick={handleLogout}
                     className="w-full mb-4 p-3 rounded-md text-[14px] md:text-[16px] leading-7"
@@ -153,17 +172,11 @@ const MyAccount = () => {
                 <div className="mt-8 md:mt-10 lg:mt-12 xl:mt-14">
                   {tab === "journals" && (
                     <div>
-                      {/* <h2 className="pl-5 md:pl-8 lg:pl-10 xl:pl-40 heading text-[24px] md:text-[26px] lg:text-[28px] xl:text-[30px] font-semibold mb-4 md:mb-6 lg:mb-8 xl:mb-10">
-                        My Journals
-                      </h2> */}
-                      <MyJournal />
+                      <MyJournal updateGarden={updateGarden} />
                     </div>
                   )}
                   {tab === "gallery" && (
                     <div>
-                      {/* <h2 className="heading text-[24px] md:text-[26px] lg:text-[28px] xl:text-[30px] font-semibold mb-4 md:mb-6 lg:mb-8 xl:mb-10">
-                        
-                      </h2> */}
                       <EmotionGallery />
                     </div>
                   )}
@@ -173,6 +186,11 @@ const MyAccount = () => {
                         Profile Settings
                       </h2>
                       <Profile userData={userData} />
+                    </div>
+                  )}
+                  {tab === "garden" && (
+                    <div>
+                      <Garden gardenState={gardenState} />
                     </div>
                   )}
                 </div>
