@@ -327,11 +327,11 @@ const MyJournal = () => {
       {!loading && !error && journals.length > 0 && (
         <div className="">
           <div className="text-right mb-4 flex flex-row justify-center">
-            <img
+            {/* <img
               src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExZHFkbHlqeGdlcXlkYms4b3FrZ3ZqMTN6cW1oZHkxNWJ0bHhiZnVldyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9dHM/ooeyQwQzrFo4exrDqg/giphy.gif"
               alt=""
               className="w-[100px] "
-            />
+            /> */}
        
             <button
               onClick={handleAddJournal}
