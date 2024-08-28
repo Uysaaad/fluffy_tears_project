@@ -2,7 +2,9 @@ import React from "react";
 import { RiDeleteBinLine } from "react-icons/ri";
 
 const EmotionGalleryItem = ({ emotion, handleDelete, isLeft }) => {
+  // Destructure properties from the emotion object
   const { _id, text, emotion: emotionType, illustration, createdAt } = emotion;
+  // Format the date, defaulting to "Unknown date" if createdAt is not available
   const formattedDate = createdAt
     ? new Date(createdAt).toLocaleDateString()
     : "Unknown date";
@@ -44,6 +46,7 @@ const EmotionGalleryItem = ({ emotion, handleDelete, isLeft }) => {
   );
 };
 
+// Helper function to get color class based on emotion type
 const getColor = (emotionType) => {
   switch (emotionType) {
     case "anger":

@@ -1,8 +1,5 @@
 import Journal from "../models/Journal.js";
-import {
-  runPredictionModel,
-  generateIllustration,
-} from "../utils/emotionUtils.js";
+
 
 export const getUserJournals = async (req, res) => {
   try {
@@ -49,6 +46,7 @@ export const deleteJournal = async (req, res) => {
   }
 };
 
+// run prediction model
 export const finishJournal = async (req, res) => {
   try {
     const { content } = req.body;

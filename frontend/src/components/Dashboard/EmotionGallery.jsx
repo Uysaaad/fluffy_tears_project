@@ -5,9 +5,9 @@ import HashLoader from "react-spinners/HashLoader";
 import EmotionGalleryItem from "./EmotionGalleryItem"; // Ensure this path is correct
 
 const EmotionGallery = () => {
-  const [emotions, setEmotions] = useState([]);
-  const [loading, setLoading] = useState(false);
-
+  const [emotions, setEmotions] = useState([]); // Store fetched emotions
+  const [loading, setLoading] = useState(false); // Track loading state
+  // useEffect hook to fetch emotions when the component mounts
   useEffect(() => {
     const fetchEmotions = async () => {
       setLoading(true);
@@ -34,14 +34,14 @@ const EmotionGallery = () => {
     };
 
     fetchEmotions();
-  }, []);
+  }, []); // Empty dependency array means this effect runs once on mount
 
   const handleDelete = async (id) => {
     try {
       const res = await fetch(`${BASE_URL}/emotions/${id}`, {
         method: "DELETE",
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Add auth token to request
         },
       });
 
@@ -49,7 +49,7 @@ const EmotionGallery = () => {
         const errorText = await res.text();
         throw new Error(`${res.status} ${res.statusText}: ${errorText}`);
       }
-
+      // Update emotions state by filtering out the deleted emotion
       setEmotions(emotions.filter((emotion) => emotion._id !== id));
       toast.success("Emotion deleted successfully");
     } catch (err) {
@@ -72,7 +72,7 @@ const EmotionGallery = () => {
               key={emotion._id}
               emotion={emotion}
               handleDelete={handleDelete}
-              isLeft={index % 2 === 0}
+              isLeft={index % 2 === 0} // Alternate left/right positioning
             />
           ))}
         </div>

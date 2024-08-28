@@ -5,18 +5,21 @@ import { toast } from "react-toastify";
 import { MdOutlineCancel } from "react-icons/md";
 import { MdOutlineDone } from "react-icons/md";
 
+// Define the AddJournal component, receiving props for controlling its visibility and behavior
 const AddJournal = ({ isOpen, onClose, onJournalAdded }) => {
   const { token } = useContext(AuthContext);
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [title, setTitle] = useState(""); // For journal title
+  const [content, setContent] = useState(""); // For journal content
+  const [loading, setLoading] = useState(false); // For tracking loading state
+  const [error, setError] = useState(null); // For storing error messages
 
+  // Function to handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
+      // Send POST request to add a new journal
       const res = await fetch(`${BASE_URL}/journals`, {
         method: "POST",
         headers: {
@@ -30,7 +33,7 @@ const AddJournal = ({ isOpen, onClose, onJournalAdded }) => {
         const errorText = await res.text();
         throw new Error(`${res.status} ${res.statusText}: ${errorText}`);
       }
-
+      // Parse the response JSON
       const newJournal = await res.json();
       toast.success("Journal added successfully!");
       setTitle("");
@@ -45,20 +48,24 @@ const AddJournal = ({ isOpen, onClose, onJournalAdded }) => {
       setLoading(false);
     }
   };
-
+  // If the modal is not open, don't render anything
   if (!isOpen) return null;
-
+  // Render the add journal form
   return (
     <div className="font-quicksand fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-[#D3F4C7] p-6 rounded-tr-lg rounded-br-lg shadow-lg w-[300px] h-[400px] lg:w-[450px] lg:h-[600px] xl:w-[600px] xl:h-[800px]">
         <div className="flex flex-row justify-between">
           <h2 className="text-[#10477D] text-lg font-bold mb-4">Dear Diary,</h2>
-          <button type="button" onClick={onClose} className="mb-4 text-red-400 text-[20px] hover:text-red-900">
+          <button
+            type="button"
+            onClick={onClose}
+            className="mb-4 text-red-400 text-[20px] hover:text-red-900"
+          >
             <MdOutlineCancel />
           </button>
         </div>
 
-        {error && <p className="text-red-500">{error}</p>}
+        {error && <p className="text-red-500">{error}</p>} 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-sm font-bold mb-2 text-[#10477D]">

@@ -1,5 +1,6 @@
 # 🌸 Fluffy Tears: Emotion Detection and Visualization with Machine Learning Web Application 🌸
 
+
 Welcome to **Fluffy Tears: Emotion Detection with Machine Learning**! This project leverages advanced machine learning techniques to detect emotions from user journal entries and provides an engaging visual representation of these emotions through an interactive 3D garden. 🌼🌈
 
 ## 🎯 Project Overview
@@ -34,13 +35,13 @@ To get started with the project, follow these steps:
     ```
 
 2. **Install dependencies**:
-    ```bash
-    npm install
-    cd client
-    npm install
-    cd ..
-    ```
 
+    ```bash
+    cd backend
+    npm install
+    cd frontend
+    npm install
+    ```
 3. **Setup environment variables**:
     Create a `.env` file in the root directory and add the following environment variables:
     ```bash
@@ -50,19 +51,16 @@ To get started with the project, follow these steps:
 
 4. **Run the application**:
     ```bash
+    cd backend
     # Run backend server
-    npm run server
+    npm start
 
     # Run frontend
-    cd client
-    npm start
+    cd frontend
+    npm run dev
     ```
 
 5. **Access the application**:
-    Open your browser and navigate to `http://localhost:3000`
+    Open your browser and navigate to `http://localhost:5731`
 
-## 🧪 Testing
 
-To run tests, use the following command:
-```bash
-npm test

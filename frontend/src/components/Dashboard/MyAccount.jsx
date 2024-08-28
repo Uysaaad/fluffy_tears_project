@@ -17,8 +17,10 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { CiLogout } from "react-icons/ci";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { GiFlowerPot } from "react-icons/gi";
+import ReactAudioPlayer from "react-audio-player";
 
 const MyAccount = () => {
+  // State for managing active tab
   const [tab, setTab] = useState("journals");
   const [gardenState, setGardenState] = useState({
     seeds: 0,
@@ -34,10 +36,11 @@ const MyAccount = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    dispatch({ type: "LOGOUT" });
-    navigate("/login");
+    dispatch({ type: "LOGOUT" }); // Dispatch logout action
+    navigate("/login"); // Redirect to login page
   };
 
+  // Function to handle account deletion
   const handleDelete = async () => {
     try {
       const res = await fetch(`${BASE_URL}/users/${userData._id}`, {
@@ -72,6 +75,7 @@ const MyAccount = () => {
 
   return (
     <>
+      <ReactAudioPlayer src="/xysmusic.mp3" autoPlay loop />
       <BubbleHomePage />
       <section
         className="bg-gray-50 my-10 h-4/5

@@ -3,13 +3,17 @@ import Header from '../components/Header/Header';
 import Footer from '../components/Footer/Footer';
 import Router from '../routes/Router';
 const Layout = () => {
-    return <>
+    return (
+      <>
         <Header />
         <main>
-                <Router />
+          {/* The Router component is rendered here, which will display
+                different components based on the current URL */}
+          <Router />
         </main>
         <Footer />
-        </>
+      </>
+    );
 }
 
 export default Layout;

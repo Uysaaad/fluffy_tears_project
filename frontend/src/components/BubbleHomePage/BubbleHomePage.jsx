@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import "./BubbleHomePage.scss"; // Ensure you have the SCSS file for styling
+import "./BubbleHomePage.scss"; 
 
 const BubbleHomePage = () => {
   useEffect(() => {

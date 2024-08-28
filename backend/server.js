@@ -17,13 +17,14 @@ dotenv.config(); // Load environment variables from .env file
 const app = express();
 const port = process.env.PORT || 8000;
 
+// Configure CORS options
 const corsOptions = {
-  origin: "http://localhost:5173",
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true,
+  origin: "http://localhost:5173", // Allow requests from this origin
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allowed HTTP methods
+  allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
+  credentials: true, // Allow credentials (cookies, authorization headers, etc.)
 };
-
+// Apply CORS middleware with the specified options
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions)); // Pre-flight requests for all routes
 
@@ -69,3 +70,4 @@ app.listen(port, () => {
   connectDB();
   console.log(`Server running on port ${port}`);
 });
+

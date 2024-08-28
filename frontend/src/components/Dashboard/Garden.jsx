@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import Spline from "@splinetool/react-spline";
+import ReactAudioPlayer from "react-audio-player";
+
 
 const Garden = ({ gardenState }) => {
   useEffect(() => {
@@ -9,9 +11,8 @@ const Garden = ({ gardenState }) => {
 
   return (
     <div className="w-full h-screen bg-none">
-        <Spline
-        scene="https://prod.spline.design/9FwmyjV2j5yQ7-cB/scene.splinecode" 
-      />
+      
+      <Spline scene="https://prod.spline.design/pw5jjdlxhSwFGoCK/scene.splinecode" />
     </div>
   );
 };

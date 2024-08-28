@@ -12,25 +12,26 @@ import { MdOutlineNavigateNext } from "react-icons/md";
 import { MdOutlineNavigateBefore } from "react-icons/md";
 import { CiFaceSmile } from "react-icons/ci";
 import { RiDeleteBinLine } from "react-icons/ri";
-import HorizontalBar from "./HorizontalBar";
 import PieChart from "./PieChart";
 import { MdOutlineCancel } from "react-icons/md";
-import Card from "../../assets/images/card.jpg"
+
 
 
 
 const MyJournal = () => {
+  // Access the authentication token from context
   const { token } = useContext(AuthContext);
-  const [journals, setJournals] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [isAddJournalOpen, setIsAddJournalOpen] = useState(false);
-  const [predictions, setPredictions] = useState({});
-  const [illustrations, setIllustrations] = useState({});
-  const [currentPage, setCurrentPage] = useState(0);
-  const [currentJournalId, setCurrentJournalId] = useState(null);
-  const sketchContainerRef = useRef(null);
+  const [journals, setJournals] = useState([]); // Store fetched journals
+  const [loading, setLoading] = useState(false); // Track loading state
+  const [error, setError] = useState(null); // Store any error messages
+  const [isAddJournalOpen, setIsAddJournalOpen] = useState(false); // Control AddJournal modal
+  const [predictions, setPredictions] = useState({}); // Store emotion predictions
+  const [illustrations, setIllustrations] = useState({}); // Store generated illustrations
+  const [currentPage, setCurrentPage] = useState(0); // Track current page in journal
+  const [currentJournalId, setCurrentJournalId] = useState(null); // Track current journal for illustration
+  const sketchContainerRef = useRef(null); // Ref for p5.js sketch container
 
+  // Fetch journals on component mount
   useEffect(() => {
     const fetchJournals = async () => {
       setLoading(true);
@@ -130,7 +131,6 @@ const MyJournal = () => {
       return updatedPredictions;
     });
   };
-
 
   const handleVisualize = (journalId) => {
     setCurrentJournalId(journalId);
@@ -332,8 +332,9 @@ const MyJournal = () => {
               alt=""
               className="w-[100px] "
             /> */}
-       
+
             <button
+              aria-label="Add Journal"
               onClick={handleAddJournal}
               className="py-2 text-gray-700 rounded-md text-[18px] md:text-[10px] lg:text-[20px] xl:text-[30px]"
             >
