@@ -30,8 +30,8 @@ To get started with the project, follow these steps:
 
 1. **Clone the repository**:
     ```bash
-    git clone https://github.com/your-username/emotion-detection-visualization.git
-    cd emotion-detection-visualization
+    git clone https://github.com/Uysaaad/fluffy_tears_project.git
+    cd fluffy_tears_project
     ```
 
 2. **Install dependencies**:
