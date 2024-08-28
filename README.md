@@ -1,4 +1,4 @@
-![Screenshot 2024-08-15 at 14 44 50](https://github.com/user-attachments/assets/8756e549-5238-4fac-a33a-886135519d5e)# 🌸 Fluffy Tears: Emotion Detection and Visualization with Machine Learning Web Application 🌸
+# 🌸 Fluffy Tears: Emotion Detection and Visualization with Machine Learning Web Application 🌸
 ![Screenshot 2024-08-15 at 14 44 50](https://github.com/user-attachments/assets/5cf315d0-af23-4c6c-9267-61e75da2f156)
 
 
