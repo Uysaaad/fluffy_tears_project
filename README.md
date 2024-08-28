@@ -12,13 +12,15 @@ This application combines the power of machine learning, natural language proces
 ## 🚀 Features
 
 - **Emotion Detection**: Analyze journal entries and detect emotions such as joy, sadness, fear, and anger using machine learning models. 🧠💖
-  ![Screenshot 2024-08-15 at 14 45 00](https://github.com/user-attachments/assets/328c8b88-fa17-4d57-b341-aa3c423c033b)
+   ![Screenshot 2024-08-15 at 14 45 10](https://github.com/user-attachments/assets/777ab2c9-217e-4d1c-b0b0-3f5cb5a5f122)
 - **Interactive 3D Garden**: Visualize detected emotions in a dynamic garden where plants grow based on the emotions expressed in journal entries. 🌱🌼
   ![Screenshot 2024-08-20 at 19 39 38](https://github.com/user-attachments/assets/be7154ee-c02e-4e37-963f-eb34ccf81f6d)
 
 - **Personal Journal**: Users can add, edit, and delete journal entries. Each entry is analyzed for emotions, and visualizations are updated accordingly. 📓✍️
+  ![Screenshot 2024-08-15 at 14 45 00](https://github.com/user-attachments/assets/328c8b88-fa17-4d57-b341-aa3c423c033b)
 - **Emotion Gallery**: View and reflect on past emotions through a gallery that showcases visual representations of detected emotions. 🖼️📅
-  ![Screenshot 2024-08-15 at 14 45 10](https://github.com/user-attachments/assets/777ab2c9-217e-4d1c-b0b0-3f5cb5a5f122)
+ 
+![Screenshot 2024-08-15 at 14 45 49](https://github.com/user-attachments/assets/41c7fca0-a7aa-46d9-b7bd-cbf73d1e51e7)
 
 - **Secure Authentication**: User authentication and authorization ensure that journal entries and visualizations are personalized and secure. 🔒🔑
 
